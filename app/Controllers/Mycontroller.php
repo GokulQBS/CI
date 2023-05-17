@@ -25,12 +25,12 @@ class Mycontroller extends BaseController
  
     // Home Page
     public function index($created=0){
-        $this->data['user_created'] = false;
-        $this->data['user_updated'] = false;
         if($created == 1){
-            $this->data['user_created'] = true;
+            $this->data['user_notification'] = "created";
         }else if($created == 2){
-            $this->data['user_updated'] = true;
+            $this->data['user_notification'] = "updated";
+        }else if($created == 3){
+            $this->data['user_notification'] = "deleted";
         }
         $this->data['list'] = $this->mymodel->select('*')->get()->getResult();
         echo view('templates/header', $this->data);
@@ -55,13 +55,38 @@ class Mycontroller extends BaseController
             return redirect()->to(base_url('/1'));
         }else{
             echo view('templates/header', $this->data);
-            echo '<p class="text-center my-5 py-5">Bro we got screwed up</p>';
+            echo '<p class="text-center my-5 py-5">we got some issues</p>';
         }
     }
-    public function getupdate(){
-        $this->data['page_title'] = "crate page";
-        echo view('templates/header', $this->data);
-        echo view('crud/add');
-        echo view('templates/footer');
+    public function update($userid = null){
+        if($userid !=null){
+            $this->data['user_updated'] = true;
+        $updateuser =[
+            'id' => $userid,
+            'name'=>$this->request->getPost('name'),
+            'email'=>$this->request->getPost('email'),
+            'password'=>$this->request->getPost('password'),
+        ];
+        if($this->mymodel->save($updateuser)){
+            return redirect()->to(base_url('/2'));
+        }else{
+            echo view('templates/header', $this->data);
+            echo '<p class="text-center my-5 py-5">we got some issues in database</p>';
+        }
+        }
+        else{
+            echo view('templates/header', $this->data);
+            echo '<p class="text-center my-5 py-5">we got some issues</p>';
+        }
+    }
+    public function delete($userid = null){
+        if(is_numeric($userid)){
+            if($this->mymodel->delete($userid)){
+                return redirect()->to(base_url('/3'));
+            }else{
+                echo view('templates/header', $this->data);
+                echo '<p class="text-center my-5 py-5">we got some issues in database</p>';
+            }
+        }        
     }
 }

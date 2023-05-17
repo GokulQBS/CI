@@ -33,7 +33,8 @@ $routes->get('/', 'Mycontroller::index');
 $routes->get('/(:num)', 'Mycontroller::index/$1');
 $routes->get('create', 'Mycontroller::create');
 $routes->post('store', 'Mycontroller::store');
-$routes->get('update/(:any)', 'Mycontroller::update/$1');
+$routes->post('update/(:num)', 'Mycontroller::update/$1');
+$routes->get('delete/(:num)', 'Mycontroller::delete/$1');
 
 
 /*
